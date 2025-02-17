@@ -1,4 +1,5 @@
 import Swal from "sweetalert2";
+var base_url = "http://127.0.0.1:8000/"
 
 const UploadFiles = async (files) => {
     if (files.length === 0) {
@@ -15,7 +16,7 @@ const UploadFiles = async (files) => {
     files.forEach((file) => formData.append("file", file));
 
     try {
-        const response = await fetch("http://127.0.0.1:8000/upload-file", {
+        const response = await fetch(base_url + "upload-file", {
             method: "POST",
             body: formData,
         });
@@ -37,4 +38,17 @@ const UploadFiles = async (files) => {
     }
 };
 
-export default { UploadFiles };
+
+const GetDatasets = async (search) =>{
+    console.debug(search)
+    const url = new URL(base_url + "get-databases");
+    url.searchParams.append("name", search.search);
+    url.searchParams.append("order", search.orderDesc ? "desc" : "asc");
+    if (search.startDate) url.searchParams.append("startDate", search.startDate.toISOString().split('T')[0]);
+    if (search.endDate) url.searchParams.append("endDate", search.endDate.toISOString().split('T')[0]);
+  
+    const response = await fetch(url);
+    return response.json();
+  }
+
+export default { UploadFiles, GetDatasets };

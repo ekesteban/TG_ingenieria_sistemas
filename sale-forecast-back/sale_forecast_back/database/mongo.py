@@ -46,3 +46,17 @@ def getDatasetById(dataset_id):
     except Exception as e:
         print(f"Error al obtener el dataset: {e}")
         raise e
+
+def getDatasetsByNameDate(filter_query, sort_order):
+
+    db = get_database()
+    collection = db["datasets"]
+
+    results = collection.find(filter_query).sort(sort_order)
+
+    response = []
+    for item in results:
+        item['_id'] = str(item['_id'])  # Convert ObjectId to string
+        response.append(item)
+        
+    return response
