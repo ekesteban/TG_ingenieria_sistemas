@@ -5,8 +5,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import CallApi from "../../api_services/CallApi";
 
 let searchTimeout;
+let maxTime = 1000
 
-export default function SelectFile() {
+export default function SelectFile({ onSelect, onClose }) {
   const [files, setFiles] = useState([]);
   const [search, setSearch] = useState("");
   const [orderDesc, setOrderDesc] = useState(true);
@@ -17,10 +18,12 @@ export default function SelectFile() {
   let auxOrder = true;
 
   useEffect(() => {
+
     clearTimeout(searchTimeout);
+
     searchTimeout = setTimeout(() => {
       CallApi.GetDatasets({search, orderDesc, startDate, endDate}).then(setFiles);
-    }, 1000); 
+    }, maxTime); 
     return () => clearTimeout(searchTimeout);
   }, [search, orderDesc, startDate, endDate]);
 
@@ -61,20 +64,15 @@ export default function SelectFile() {
         ))}
       </div>
       <div className="flex justify-between mt-6">
-        <button className="bg-gray-300 text-gray-800 p-3 rounded w-40">Cancelar</button>
+        <button onClick={onClose} className="bg-gray-300 text-gray-800 p-3 rounded w-40">Cancelar</button>
         <button 
+          onClick={() => onSelect(selectedFile)}
           className="bg-blue-600 text-white p-3 rounded w-40"
           disabled={!selectedFile}
         >
           Seleccionar
         </button>
       </div>
-      {selectedFile && (
-        <div className="mt-4 p-2 bg-blue-100 border border-blue-300 rounded">
-          <p className="text-sm font-medium">Seleccionado:</p>
-          <p className="text-xs">{selectedFile.name} - {selectedFile.file_name}</p>
-        </div>
-      )}
     </div>
   );
 }

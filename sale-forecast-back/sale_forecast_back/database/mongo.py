@@ -60,3 +60,15 @@ def getDatasetsByNameDate(filter_query, sort_order):
         response.append(item)
         
     return response
+
+
+def get_file_data_by_id(file_id):
+
+    db = get_database()
+    collection = db["files"]
+    data = collection.find_one({"_id": ObjectId(file_id)})
+
+    if data:
+        return list(data.get('data'))
+    else:
+        return list()

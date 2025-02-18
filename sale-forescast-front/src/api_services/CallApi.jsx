@@ -46,6 +46,7 @@ const GetDatasets = async (search) =>{
     url.searchParams.append("order", search.orderDesc ? "desc" : "asc");
     if (search.startDate) url.searchParams.append("startDate", search.startDate.toISOString().split('T')[0]);
     if (search.endDate) url.searchParams.append("endDate", search.endDate.toISOString().split('T')[0]);
+    url.searchParams.append("userId", "67a823cbf1c993640006cf59")
   
     const response = await fetch(url);
     return response.json();
