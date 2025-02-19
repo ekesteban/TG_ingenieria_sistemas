@@ -17,9 +17,8 @@ let acutal_dataset = {
 const Results = () => {
     const [selectedDataset] = useState('');
     const [showModal, setShowModal] = useState(false);
-    const [chartsDots, setChartsDots] = useState(null);
 
-    const [chartData, setChartData] = useState([
+    const [chartData, setChartData] = useState(
         {
             x: [1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020],
             y: [null, null, null, null, 9400, 11000, 12500, 14000],
@@ -27,7 +26,8 @@ const Results = () => {
             yName: 'Ventas',
             chartName: 'Ventas actuales'
         }
-        ]);
+        );
+    const [highlightIndex, setHighlightIndex] = useState(50);
 
     const handleOpenModal = () => {
         setShowModal(true);
@@ -41,11 +41,9 @@ const Results = () => {
         acutal_dataset = dataset
         setShowModal(false);
         console.debug(acutal_dataset['file_id'])
-        //CallApi.GetCharts(acutal_dataset['file_id']).then(setChartsDots)
-        //console.debug(chartsDots)
 
         CallApi.GetCharts(acutal_dataset['file_id']).then((response) => {
-        setChartData([
+        setChartData(
             {
               x: response['date'],
               y: response['quantity'],
@@ -53,7 +51,7 @@ const Results = () => {
               yName: 'Ventas',
               chartName: 'Ventas actuales'
             }
-        ]);
+        );
         });   
     };
 
@@ -82,7 +80,7 @@ const Results = () => {
                 </select>
             </div>
 
-            <Charts datasets={chartData} />
+            <Charts dataset={chartData} highlightIndex={highlightIndex} />
 
             {/* Modal Render */}
             {showModal && (
