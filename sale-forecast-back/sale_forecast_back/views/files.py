@@ -1,7 +1,9 @@
 import pandas as pd
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
-from ..database.mongo import insertDataset
+from ..database.mongo import insert_file
+from datetime import datetime
+from ..database.mongo import insert_dataset
 
 @api_view(["POST"])
 def upload_file(request):
@@ -11,23 +13,44 @@ def upload_file(request):
     file = request.FILES["file"]
 
     try:
-        dataset = getData(file)
+        # save file
+        file_request = get_data(file)
+        file_response_id = insert_file(file_request)
 
-        # Insertar el dataset en la base de datos
-        response = insertDataset(dataset)
+        # save dataset
+        request_dataset = get_data_base_data("67a823cbf1c993640006cf59", file.name, file.name, str(file_response_id), "Description")
+        dataset_response_id = insert_dataset(request_dataset)
 
-        return JsonResponse({"id": str(response)}, status=200)
+        return JsonResponse({"id": str(dataset_response_id)}, status=200)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
     
-def getData(file):
+def get_data(file):
     df = pd.read_excel(file)
     df.rename(columns={"fecha": "Date", "ventas totales": "Quantity"}, inplace=True)
     df["Date"] = pd.to_datetime(df["Date"]).dt.strftime('%Y-%m-%d') 
-    df = df[["Date", "Quantity"]] 
-    data_list = df.to_dict(orient="records")
+
+    data = {
+        "date": df["Date"].tolist(),
+        "quantity": df["Quantity"].tolist()
+    }
+    
     return {
-            "name": file.name,
-            "descripcion": "Archivo subido desde la API",
-            "data": data_list
+        "data": data
+    }
+
+def get_data_base_data(user_id, name, file_name, file_id, description):
+    actual_date = datetime.today().strftime('%Y-%m-%d')
+    return {
+        "user_id": user_id,
+        "name": name,
+        "file_name": file_name,
+        "file_id": file_id,
+        "created_at": actual_date,
+        "description": description,
+        "trined_models": {
+            "arima": None,
+            "lsmt": None,
+            "svm": None
         }
+    }   

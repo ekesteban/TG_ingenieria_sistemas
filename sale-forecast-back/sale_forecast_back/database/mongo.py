@@ -18,7 +18,7 @@ def get_database():
     db = client["forecasting"] 
     return db
 
-def insertDataset(dataset):
+def insert_file(dataset):
     try:
         db = get_database()  
         collection = db["files"] 
@@ -69,6 +69,18 @@ def get_file_data_by_id(file_id):
     data = collection.find_one({"_id": ObjectId(file_id)})
 
     if data:
-        return list(data.get('data'))
+        return data.get('data')
     else:
-        return list()
+        return None
+    
+
+def insert_dataset(dataset):
+    try:
+        db = get_database()  
+        collection = db["datasets"] 
+        result = collection.insert_one(dataset)
+        print(f"Dataset insertado con éxito. ID: {result.inserted_id}")
+        return result.inserted_id
+    except Exception as e:
+        print(f"Error al insertar el dataset: {e}")
+        raise e

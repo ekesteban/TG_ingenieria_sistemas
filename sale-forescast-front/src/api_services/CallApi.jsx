@@ -52,4 +52,11 @@ const GetDatasets = async (search) =>{
     return response.json();
   }
 
-export default { UploadFiles, GetDatasets };
+const GetCharts = async (file_id) =>{
+    const url = new URL(base_url + "get-file");
+    url.searchParams.append("file_id", file_id);
+    const response = await fetch(url);
+    return response.json();
+  }
+
+export default { UploadFiles, GetDatasets, GetCharts };

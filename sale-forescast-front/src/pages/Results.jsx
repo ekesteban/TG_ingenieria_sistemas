@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import SelectFile from './modal/SelectFile';
+import Charts from './modal/Charts'
+import CallApi from '../api_services/CallApi';
 
 let acutal_dataset = {
     _id: "67ac155dfb19d4d4dce332eb",
@@ -11,9 +13,21 @@ let acutal_dataset = {
     file_id: "67ac11b8fc1dd03b8fec4cf6",
 };
 
+
 const Results = () => {
     const [selectedDataset] = useState('');
     const [showModal, setShowModal] = useState(false);
+    const [chartsDots, setChartsDots] = useState(null);
+
+    const [chartData, setChartData] = useState([
+        {
+            x: [1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020],
+            y: [null, null, null, null, 9400, 11000, 12500, 14000],
+            xName: 'Dias',
+            yName: 'Ventas',
+            chartName: 'Ventas actuales'
+        }
+        ]);
 
     const handleOpenModal = () => {
         setShowModal(true);
@@ -26,7 +40,21 @@ const Results = () => {
     const handleDatasetSelect = (dataset) => {
         acutal_dataset = dataset
         setShowModal(false);
-        console.debug(acutal_dataset)
+        console.debug(acutal_dataset['file_id'])
+        //CallApi.GetCharts(acutal_dataset['file_id']).then(setChartsDots)
+        //console.debug(chartsDots)
+
+        CallApi.GetCharts(acutal_dataset['file_id']).then((response) => {
+        setChartData([
+            {
+              x: response['date'],
+              y: response['quantity'],
+              xName: 'Dias',
+              yName: 'Ventas',
+              chartName: 'Ventas actuales'
+            }
+        ]);
+        });   
     };
 
     return (
@@ -53,6 +81,8 @@ const Results = () => {
                     <option value="arima">ARIMA</option>
                 </select>
             </div>
+
+            <Charts datasets={chartData} />
 
             {/* Modal Render */}
             {showModal && (
