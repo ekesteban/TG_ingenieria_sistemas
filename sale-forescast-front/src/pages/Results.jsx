@@ -27,7 +27,7 @@ const Results = () => {
             chartName: 'Ventas actuales'
         }
         );
-    const [highlightIndex, setHighlightIndex] = useState(50);
+    const [highlightIndex, setHighlightIndex] = useState(30);
 
     const handleOpenModal = () => {
         setShowModal(true);
@@ -52,6 +52,7 @@ const Results = () => {
               chartName: 'Ventas actuales'
             }
         );
+        setHighlightIndex(response['hightlight'])
         });   
     };
 

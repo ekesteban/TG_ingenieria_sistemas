@@ -3,6 +3,7 @@ import * as echarts from 'echarts';
 
 const GraphicCharts = ({ dataset, highlightIndex = 0 }) => {
   useEffect(() => {
+
     const chartDom = document.getElementById('chart');
     const myChart = echarts.init(chartDom);
     
