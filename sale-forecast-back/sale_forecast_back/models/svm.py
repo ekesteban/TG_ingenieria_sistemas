@@ -6,16 +6,13 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from datetime import datetime, timedelta
 
 
-def get_svm(data):
-    print(data)
+def get_svm(data, config):
     # Convertir a DataFrame
     df = pd.DataFrame(data)
 
     # Convertir la fecha en una variable numérica (días desde la primera fecha)
     df['date'] = pd.to_datetime(df['date'])
     df['days_since_start'] = (df['date'] - df['date'].min()).dt.days
-
-    #df['quantity'] = df['quantity'].rolling(window=5, center=True).mean().fillna(df['quantity'])
 
     # Variables predictoras y objetivo
     X = df[['days_since_start']].values

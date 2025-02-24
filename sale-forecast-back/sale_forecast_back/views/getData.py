@@ -4,6 +4,9 @@ from datetime import datetime
 
 from ..database.mongo import getDatasetsByNameDate
 from ..database.mongo import get_file_data_by_id
+from ..database.mongo import get_trained_model
+from ..database.mongo import save_training_data_in_datasets
+from ..database.mongo import insert_trained_file
 
 from .forecast import get_forecast
 
@@ -39,13 +42,23 @@ def get_datasets_by_name_date_order(request):
 def get_files_by_id(request):
 
     file_id = request.GET.get('file_id')
+    file_train_id = request.GET.get('training_id')
+    model_type = request.GET.get('model_type')
+    dataset_id = request.GET.get('dataset_id')
+
+    print(file_train_id)
+
 
     try:
         # get data file
         response_file = get_file_data_by_id(file_id)
 
         # get forecast
-        response_forecast = get_forecast(response_file)
+        if file_train_id == None:
+            response_forecast = get_forecast(response_file, model_type, None) # if it is not trained
+            save_trained_model(response_forecast, model_type, dataset_id)
+        else:
+            response_forecast = get_trained_model(model_type, file_train_id) # if it is trained
 
         days_to_show = 150 #len(response_file["date"])
         
@@ -63,3 +76,8 @@ def get_files_by_id(request):
         return JsonResponse(response, safe=False, status=200)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+    
+
+def save_trained_model(data, model_type, dataset_id):
+    trained_file_id = insert_trained_file(data, model_type)
+    save_training_data_in_datasets(model_type, str(trained_file_id), dataset_id)

@@ -11,6 +11,9 @@ let acutal_dataset = {
     file_name: "ventas_mayo.xls",
     description: "archivo ventas",
     file_id: "67ac11b8fc1dd03b8fec4cf6",
+    svm: [],
+    lstm: [],
+    arima: []
 };
 
 
@@ -29,6 +32,9 @@ const Results = () => {
         );
     const [highlightIndex, setHighlightIndex] = useState(30);
 
+    const [actualModel, setActualModel] = useState('svm');
+
+
     const handleOpenModal = () => {
         setShowModal(true);
     };
@@ -40,9 +46,12 @@ const Results = () => {
     const handleDatasetSelect = (dataset) => {
         acutal_dataset = dataset
         setShowModal(false);
-        console.debug(acutal_dataset['file_id'])
+        console.debug(acutal_dataset[actualModel])
 
-        CallApi.GetCharts(acutal_dataset['file_id']).then((response) => {
+        CallApi.GetCharts(acutal_dataset['file_id'], 
+            acutal_dataset[actualModel].length > 0 ? acutal_dataset[actualModel][0]["id"] : null, 
+            actualModel, acutal_dataset['_id'])
+        .then((response) => {
         setChartData(
             {
               x: response['date'],

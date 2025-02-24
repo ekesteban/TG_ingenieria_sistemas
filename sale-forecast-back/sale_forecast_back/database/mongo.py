@@ -58,7 +58,7 @@ def getDatasetsByNameDate(filter_query, sort_order):
     for item in results:
         item['_id'] = str(item['_id'])  # Convert ObjectId to string
         response.append(item)
-        
+    print(response)
     return response
 
 
@@ -83,4 +83,38 @@ def insert_dataset(dataset):
         return result.inserted_id
     except Exception as e:
         print(f"Error al insertar el dataset: {e}")
+        raise e
+    
+def get_trained_model(model_type, model_file_id):
+
+    db = get_database()
+    collection = db[str(model_type) + "_trains"]
+    data = collection.find_one({"_id": ObjectId(model_file_id)})
+
+    if data:
+        return data.get('data')
+    else:
+        return None
+    
+def save_training_data_in_datasets(model_type, model_file_id, dataset_id):
+    db = get_database()  
+    collection = db["datasets"] 
+
+    save_trained_data = {
+        "id": model_file_id,
+        "advanced_config": False
+    }
+
+    collection.update_one(
+    {"_id": ObjectId(dataset_id)},
+    {"$push": {model_type: save_trained_data}}
+)
+    
+def insert_trained_file(data, model_type):
+    try:
+        db = get_database()  
+        collection = db[model_type + "_trains"] 
+        result = collection.insert_one({"data": data})
+        return result.inserted_id
+    except Exception as e:
         raise e

@@ -48,9 +48,7 @@ def get_data_base_data(user_id, name, file_name, file_id, description):
         "file_id": file_id,
         "created_at": actual_date,
         "description": description,
-        "trined_models": {
-            "arima": None,
-            "lsmt": None,
-            "svm": None
-        }
+        "arima": [],
+        "lsmt": [],
+        "svm": []
     }   
