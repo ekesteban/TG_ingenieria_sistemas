@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import SelectFile from './modal/SelectFile';
-import Charts from './modal/Charts'
+import Charts from './components/Charts'
 import CallApi from '../api_services/CallApi';
+import AdvancedOptions from './components/AdvancedOption';
 
 let acutal_dataset = {
     _id: "67ac155dfb19d4d4dce332eb",
@@ -65,30 +66,44 @@ const Results = () => {
         });   
     };
 
-    return (
-        <div className="flex flex-row items-center justify-center tp-10">
-            {/* Dataset Section */}
-            <div className="p-6 rounded-2xl w-96 text-center flex-row">
-                <h2 className="text-xl font-bold mb-4">Dataset</h2>
-                <button 
-                    onClick={handleOpenModal} 
-                    className="bg-blue-500 text-white px-6 py-2 rounded-2xl shadow-md hover:bg-blue-600 transition-all">
-                    Seleccionar Dataset
-                </button>
-                {selectedDataset && (
-                    <p className="mt-4 text-lg font-semibold">Seleccionado: {selectedDataset}</p>
-                )}
-            </div>
+    const handleModelChange = (event) => {
+        setActualModel(event.target.value);
+    };
 
-            {/* Modelo Section */}
-            <div className="p-6 rounded-2xl w-96 text-center">
-                <h2 className="text-xl font-bold mb-4">Modelo</h2>
-                <select className="p-3 border border-gray-300 rounded-1xl shadow-lg text-lg">
-                    <option value="neuronales">Neuronales</option>
-                    <option value="svm">SVM</option>
-                    <option value="arima">ARIMA</option>
-                </select>
+    return (
+        <div className="flex flex-row tp-10">
+            <div className='flex flex-col'>
+                <div className='flex flex-row items-center justify-center'>
+                        {/* Dataset Section */}
+                    <div className="p-6 rounded-2xl text-center flex-row">
+                        <h2 className="text-xl font-bold mb-4">Dataset</h2>
+                        <button 
+                            onClick={handleOpenModal} 
+                            className="bg-blue-500 text-white px-6 py-2 rounded-2xl shadow-md hover:bg-blue-600 transition-all">
+                            Seleccionar Dataset
+                        </button>
+                        {selectedDataset && (
+                            <p className="mt-4 text-lg font-semibold">Seleccionado: {selectedDataset}</p>
+                        )}
+                    </div>
+
+                    {/* Modelo Section */}
+                    <div className="p-6 rounded-2xl text-center">
+                        <h2 className="text-xl font-bold mb-4">Modelo</h2>
+                        <select 
+                            className="p-3 border border-gray-300 rounded-1xl shadow-lg text-lg"
+                            value={actualModel}
+                            onChange={handleModelChange}>
+                            <option value="lstm">LSTM</option>
+                            <option value="svm">SVM</option>
+                            <option value="arima">ARIMA</option>
+                        </select>
+                    </div>
+                </div>
+
+                <AdvancedOptions model={actualModel}/>
             </div>
+            
 
             <Charts dataset={chartData} highlightIndex={highlightIndex} />
 
