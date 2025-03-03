@@ -1,8 +1,12 @@
 import { useState } from "react";
 
-const AdvancedOptions = ({ model }) => {
+const AdvancedOptions = ({ model, onCustomTrain}) => {
 
     const [isChecked, setIsChecked] = useState(false);
+    
+    const onHandleButton = (config) => {
+        onCustomTrain(config)
+    }
 
     return (
         <div>
@@ -21,7 +25,7 @@ const AdvancedOptions = ({ model }) => {
             {isChecked && (
                 <div className="mt-4 p-4 border rounded-lg shadow">
                     {model === "lstm" && <p>Contenido para el modelo lstm</p>}
-                    {model === "svm" && <SvmOption/>}
+                    {model === "svm" && <SvmOption onHandleButton={onHandleButton}/>}
                     {model === "arima" && <p>Contenido para el modelo arima</p>}
                 </div>
             )}
@@ -30,7 +34,7 @@ const AdvancedOptions = ({ model }) => {
 
 }
 
-const SelectDays = () => {
+const SelectDays = ({ setDays }) => {
     const MIN_DAYS = 1;
     const MAX_DAYS = 90;
     const DEFAULT_DAYS = 30;
@@ -44,6 +48,7 @@ const SelectDays = () => {
         if (!isNaN(numericValue)) {
             if (numericValue >= MIN_DAYS && numericValue <= MAX_DAYS) {
                 setText(numericValue.toString());
+                setDays(numericValue); // set days
             }
         } else if (value === "") {
             setText("");
@@ -66,7 +71,7 @@ const SelectDays = () => {
     );
 };
 
-const SvmOption = () => {
+const SvmOption = ({ onHandleButton }) => {
     const [autoGrid, setAutoGrid] = useState(true);
     const [c, setC] = useState([1, 1, 1]);
     const [gamma, setGamma] = useState([0.1, 0.1, 0.1]);
@@ -75,6 +80,8 @@ const SvmOption = () => {
     const [auxC, setAuxC] = useState([]);
     const [auxGamma, setAuxGamma] = useState([]);
     const [Auxepsilon, setAuxEpsilon] = useState([]);
+
+    const [days, setDays] = useState(30);
 
     const handleChange = (setState, index, value) => {
         const newValue = parseFloat(value);
@@ -108,9 +115,23 @@ const SvmOption = () => {
         }
     };
 
+    const handleSaveConfig = () => {
+        const svmConfig = {
+          isEnable: true,
+          paramGrid: {
+            C:  c,
+            gamma: gamma,
+            epsilon: epsilon,
+            },
+            daysToPredict: days,
+          
+        };
+        onHandleButton(svmConfig);
+      };
+
     return (
         <div className="flex flex-col">
-            <SelectDays/>
+            <SelectDays setDays={setDays}/>
 
             <div className="mt-6">
                 {/* Checkbox para mostrar opciones */}
@@ -135,7 +156,7 @@ const SvmOption = () => {
                                         value={value}
                                         onChange={(e) => handleChange(setC, index, e.target.value)}
                                         className="border rounded px-2 py-1 w-20"
-                                        min="0.0001"
+                                        min="0.001"
                                     />
                                 ))}
                             </div>
@@ -148,7 +169,7 @@ const SvmOption = () => {
                                         value={value}
                                         onChange={(e) => handleChange(setGamma, index, e.target.value)}
                                         className="border rounded px-2 py-1 w-20"
-                                        min="0.0001"
+                                        min="0.001"
                                     />
                                 ))}
                             </div>
@@ -161,7 +182,7 @@ const SvmOption = () => {
                                         value={value}
                                         onChange={(e) => handleChange(setEpsilon, index, e.target.value)}
                                         className="border rounded px-2 py-1 w-20"
-                                        min="0.0001"
+                                        min="0.001"
                                     />
                                 ))}
                             </div>
@@ -170,7 +191,9 @@ const SvmOption = () => {
             </div>
 
             <button 
-                className="mt-3 bg-blue-500 text-white px-6 py-2 rounded-2xl shadow-md hover:bg-blue-6  00 transition-all">
+                className="mt-3 bg-blue-500 text-white px-6 py-2 rounded-2xl shadow-md hover:bg-blue-6  00 transition-all"
+                onClick={handleSaveConfig}
+                >
                 Entrenar
             </button>
         </div>

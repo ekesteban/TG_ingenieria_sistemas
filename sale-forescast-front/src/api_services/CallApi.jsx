@@ -52,7 +52,7 @@ const GetDatasets = async (search) =>{
     return response.json();
   }
 
-const GetCharts = async (file_id, training_id, model_type, dataset_id) =>{
+const GetCharts = async (file_id, training_id, model_type, dataset_id, config_body) =>{
     const url = new URL(base_url + "get-file");
 
     url.searchParams.append("file_id", file_id);
@@ -60,7 +60,14 @@ const GetCharts = async (file_id, training_id, model_type, dataset_id) =>{
     url.searchParams.append("model_type", model_type);
     url.searchParams.append("dataset_id", dataset_id);
 
-    const response = await fetch(url);
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(config_body),
+      });
+
     return response.json();
   }
 

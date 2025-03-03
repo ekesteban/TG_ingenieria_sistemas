@@ -21,6 +21,7 @@ let acutal_dataset = {
 const Results = () => {
     const [selectedDataset] = useState('');
     const [showModal, setShowModal] = useState(false);
+    const [config, setConfig] = useState({isEnable: false})
 
     const [chartData, setChartData] = useState(
         {
@@ -44,14 +45,25 @@ const Results = () => {
         setShowModal(false);
     };
 
+    const onCustomTrain = (config) => {
+        setConfig(config)
+
+        trainModel()
+    }
+
     const handleDatasetSelect = (dataset) => {
         acutal_dataset = dataset
         setShowModal(false);
         console.debug(acutal_dataset[actualModel])
 
+        trainModel()
+    };
+
+    const trainModel = () => {
+        console.log(config);
         CallApi.GetCharts(acutal_dataset['file_id'], 
             acutal_dataset[actualModel].length > 0 ? acutal_dataset[actualModel][0]["id"] : null, 
-            actualModel, acutal_dataset['_id'])
+            actualModel, acutal_dataset['_id'], config)
         .then((response) => {
         setChartData(
             {
@@ -63,15 +75,15 @@ const Results = () => {
             }
         );
         setHighlightIndex(response['hightlight'])
-        });   
-    };
+        });  
+    }
 
     const handleModelChange = (event) => {
         setActualModel(event.target.value);
     };
 
     return (
-        <div className="flex flex-row tp-10">
+        <div className="flex flex-row tp-10 ml-10">
             <div className='flex flex-col'>
                 <div className='flex flex-row items-center justify-center'>
                         {/* Dataset Section */}
@@ -101,17 +113,16 @@ const Results = () => {
                     </div>
                 </div>
 
-                <AdvancedOptions model={actualModel}/>
+                <AdvancedOptions model={actualModel} onCustomTrain={onCustomTrain}/>
             </div>
             
-
             <Charts dataset={chartData} highlightIndex={highlightIndex} />
 
             {/* Modal Render */}
             {showModal && (
                 <div className="fixed inset-0 bg-gray-500 bg-opacity-100 flex items-center justify-center">
                     <div className="p-6 rounded-lg w-full max-w-6xl mt-20">
-                        <SelectFile onClose={handleCloseModal} onSelect={handleDatasetSelect} />
+                        <SelectFile onClose={handleCloseModal} onSelect={handleDatasetSelect}/>
                     </div>
                 </div>
             )}

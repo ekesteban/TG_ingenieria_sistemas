@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view
 from django.http import JsonResponse
 from datetime import datetime
+import json
 
 from ..database.mongo import getDatasetsByNameDate
 from ..database.mongo import get_file_data_by_id
@@ -38,7 +39,7 @@ def get_datasets_by_name_date_order(request):
         return JsonResponse({"error": str(e)}, status=500)
     
 
-@api_view(["GET"])
+@api_view(["POST"])
 def get_files_by_id(request):
 
     file_id = request.GET.get('file_id')
@@ -46,16 +47,15 @@ def get_files_by_id(request):
     model_type = request.GET.get('model_type')
     dataset_id = request.GET.get('dataset_id')
 
-    print(file_train_id)
-
+    config = json.loads(request.body)
 
     try:
         # get data file
         response_file = get_file_data_by_id(file_id)
 
         # get forecast
-        if file_train_id == None:
-            response_forecast = get_forecast(response_file, model_type, None) # if it is not trained
+        if file_train_id == None or config["isEnable"]:
+            response_forecast = get_forecast(response_file, model_type, config) # if it is not trained
             save_trained_model(response_forecast, model_type, dataset_id)
         else:
             response_forecast = get_trained_model(model_type, file_train_id) # if it is trained

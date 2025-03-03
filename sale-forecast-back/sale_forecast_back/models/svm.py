@@ -7,6 +7,20 @@ from datetime import datetime, timedelta
 
 
 def get_svm(data, config):
+
+    # Definir los hiperparámetros a evaluar
+    param_grid = {
+        'C': [0.1, 1, 10, 100, 1000],
+        'gamma': [0.01, 0.1, 1, 10],
+        'epsilon': [0.1, 1, 5, 10]
+    }
+
+    days_to_predict = 100
+
+    if config["isEnable"]:
+        days_to_predict = config["daysToPredict"]
+        param_grid = config["paramGrid"]
+
     # Convertir a DataFrame
     df = pd.DataFrame(data)
 
@@ -20,13 +34,6 @@ def get_svm(data, config):
 
     # Dividir en datos de entrenamiento y prueba
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-    # Definir los hiperparámetros a evaluar
-    param_grid = {
-        'C': [0.1, 1, 10, 100, 1000],
-        'gamma': [0.01, 0.1, 1, 10],
-        'epsilon': [0.1, 1, 5, 10]
-    }
 
     # Configurar la búsqueda de cuadrícula
     grid_search = GridSearchCV(SVR(kernel='rbf'), param_grid, cv=5, scoring='neg_mean_squared_error', n_jobs=-1)
@@ -44,7 +51,7 @@ def get_svm(data, config):
 
     future_predictions = []
 
-    for i in range(1, 100):
+    for i in range(1, days_to_predict):
         X_future = np.array(i).reshape(-1, 1)
         prediction = best_svr.predict(X_future)[0]
         future_predictions.append(int(round(prediction)))
