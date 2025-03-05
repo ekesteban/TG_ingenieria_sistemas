@@ -5,7 +5,7 @@ import CallApi from '../api_services/CallApi';
 import AdvancedOptions from './components/AdvancedOption';
 
 let acutal_dataset = {
-    _id: "67ac155dfb19d4d4dce332eb",
+    _id: null,
     user_id: "67a823cbf1c993640006cf59",
     name: "ventas mayo",
     created_at: "2020-01-01",
@@ -59,11 +59,14 @@ const Results = () => {
         trainModel()
     };
 
-    const trainModel = () => {
+    const trainModel = (auxAtualModel=null) => {
+
+        let actualModelRequest = auxAtualModel != null ? auxAtualModel : actualModel;
+
         console.log(config);
         CallApi.GetCharts(acutal_dataset['file_id'], 
-            acutal_dataset[actualModel].length > 0 ? acutal_dataset[actualModel][0]["id"] : null, 
-            actualModel, acutal_dataset['_id'], config)
+            acutal_dataset[actualModelRequest].length > 0 ? acutal_dataset[actualModelRequest][0]["id"] : null, 
+            actualModelRequest, acutal_dataset['_id'], config)
         .then((response) => {
         setChartData(
             {
@@ -80,6 +83,11 @@ const Results = () => {
 
     const handleModelChange = (event) => {
         setActualModel(event.target.value);
+        if (acutal_dataset._id != null) {
+            trainModel(event.target.value)
+            CallApi.GetDatasetById(acutal_dataset['_id']).then((data) => {
+                acutal_dataset = data; 
+            });        }
     };
 
     return (
@@ -106,8 +114,8 @@ const Results = () => {
                             className="p-3 border border-gray-300 rounded-1xl shadow-lg text-lg"
                             value={actualModel}
                             onChange={handleModelChange}>
-                            <option value="lstm">LSTM</option>
                             <option value="svm">SVM</option>
+                            <option value="lstm">LSTM</option>
                             <option value="arima">ARIMA</option>
                         </select>
                     </div>

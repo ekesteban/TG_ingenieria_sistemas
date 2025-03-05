@@ -8,6 +8,7 @@ from ..database.mongo import get_file_data_by_id
 from ..database.mongo import get_trained_model
 from ..database.mongo import save_training_data_in_datasets
 from ..database.mongo import insert_trained_file
+from ..database.mongo import get_dataset_by_id_query
 
 from .forecast import get_forecast
 
@@ -37,6 +38,17 @@ def get_datasets_by_name_date_order(request):
         return JsonResponse(response, safe=False, status=200)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+    
+
+@api_view(["GET"])
+def get_dataset_by_id(request):
+    try:
+        response = get_dataset_by_id_query(request.GET.get('id'))
+        return JsonResponse(response, safe=False, status=200)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+
     
 
 @api_view(["POST"])

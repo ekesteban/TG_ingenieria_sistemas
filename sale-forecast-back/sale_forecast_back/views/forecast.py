@@ -2,13 +2,14 @@ import pandas as pd
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from ..models import svm
-import json
+from ..models import lstm
+from ..models import sarima
 
 def get_forecast(data, model_type, config):
 
     if model_type == "svm":
         return svm.get_svm(data, config)
     if model_type == "arima":
-        return None
+        return sarima.get_sarima(data, config)
     if model_type == "lstm":
-        return None
+        return lstm.get_lstm(data, config)

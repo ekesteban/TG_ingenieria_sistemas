@@ -9,6 +9,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('upload-file', files.upload_file),
     path('get-databases', getData.get_datasets_by_name_date_order),
+    path('get-database-by-id', getData.get_dataset_by_id),
     path('get-file', getData.get_files_by_id),
     #path('get-forescast', forecast.get_forecast),
 

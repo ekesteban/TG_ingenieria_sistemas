@@ -50,7 +50,15 @@ const GetDatasets = async (search) =>{
   
     const response = await fetch(url);
     return response.json();
-  }
+}
+
+const GetDatasetById = async (id) =>{
+    const url = new URL(base_url + "get-database-by-id");
+    url.searchParams.append("id", id);
+  
+    const response = await fetch(url);
+    return response.json();
+}
 
 const GetCharts = async (file_id, training_id, model_type, dataset_id, config_body) =>{
     const url = new URL(base_url + "get-file");
@@ -71,4 +79,4 @@ const GetCharts = async (file_id, training_id, model_type, dataset_id, config_bo
     return response.json();
   }
 
-export default { UploadFiles, GetDatasets, GetCharts };
+export default { UploadFiles, GetDatasets, GetCharts, GetDatasetById };

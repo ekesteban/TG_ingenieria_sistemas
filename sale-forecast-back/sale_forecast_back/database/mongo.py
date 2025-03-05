@@ -61,6 +61,16 @@ def getDatasetsByNameDate(filter_query, sort_order):
     print(response)
     return response
 
+def get_dataset_by_id_query(id):
+    db = get_database()
+    collection = db["datasets"]
+    response = collection.find_one({"_id": ObjectId(id)})
+    
+    response['_id'] = str(response['_id']) # Convert ObjectId to string
+
+    print(response)
+    return response
+
 
 def get_file_data_by_id(file_id):
 
