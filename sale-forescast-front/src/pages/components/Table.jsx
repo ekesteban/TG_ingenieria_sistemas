@@ -1,0 +1,30 @@
+import React from "react";
+
+const DataTable = ({ data, highlightIndex }) => {
+  return (
+    <div className="overflow-x-auto p-4">
+      <table className="min-w-full bg-white border border-gray-300">
+        <thead>
+          <tr className="bg-gray-200">
+            <th className="border px-4 py-2">Dia</th>
+            <th className="border px-4 py-2">Venta total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.x.map((year, index) => (
+            <tr
+              key={index}
+              className={`text-center ${index >= highlightIndex ? 'bg-orange-200' : ''}`}
+            >
+              <td className="border px-4 py-2">{year}</td>
+              <td className="border px-4 py-2">{data.y[index] ?? "N/A"}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+
+export default DataTable;

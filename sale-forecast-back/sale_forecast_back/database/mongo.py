@@ -1,7 +1,7 @@
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from bson import ObjectId
-
+from datetime import datetime
 
 class MongoConnection:
     _instance = None
@@ -106,13 +106,14 @@ def get_trained_model(model_type, model_file_id):
     else:
         return None
     
-def save_training_data_in_datasets(model_type, model_file_id, dataset_id):
+def save_training_data_in_datasets(model_type, model_file_id, dataset_id, config):
     db = get_database()  
     collection = db["datasets"] 
 
     save_trained_data = {
         "id": model_file_id,
-        "advanced_config": False
+        "advanced_config": config,
+        "date": datetime.today().strftime('%Y-%m-%d')
     }
 
     collection.update_one(

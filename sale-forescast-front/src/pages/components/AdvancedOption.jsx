@@ -73,9 +73,9 @@ const SelectDays = ({ setDays }) => {
 
 const SvmOption = ({ onHandleButton }) => {
     const [autoGrid, setAutoGrid] = useState(true);
-    const [c, setC] = useState([1, 1, 1]);
-    const [gamma, setGamma] = useState([0.1, 0.1, 0.1]);
-    const [epsilon, setEpsilon] = useState([0.5, 0.5, 0.5]);
+    const [c, setC] = useState([0.1, 1, 10, 100, 1000]);
+    const [gamma, setGamma] = useState([0.01, 0.1, 1, 10]);
+    const [epsilon, setEpsilon] = useState([0.1, 1, 5, 10]);
 
     const [auxC, setAuxC] = useState([]);
     const [auxGamma, setAuxGamma] = useState([]);
@@ -105,9 +105,9 @@ const SvmOption = ({ onHandleButton }) => {
             setGamma([gamma[0]]);
             setEpsilon([epsilon[0]]);
         } else {
-            setAuxC([c[0], auxC[1], auxC[2]]);
-            setAuxGamma([gamma[0], auxGamma[1], auxGamma[2]]);
-            setAuxEpsilon([epsilon[0], epsilon[1], epsilon[2]]);
+            setAuxC([c[0], c[1], c[2], c[3], c[4]]);
+            setAuxGamma([gamma[0], gamma[1], gamma[2], gamma[3]]);
+            setAuxEpsilon([epsilon[0], epsilon[1], epsilon[2], epsilon[3]]);
 
             setC(auxC)
             setGamma(auxGamma)

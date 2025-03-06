@@ -3,6 +3,10 @@ import SelectFile from './modal/SelectFile';
 import Charts from './components/Charts'
 import CallApi from '../api_services/CallApi';
 import AdvancedOptions from './components/AdvancedOption';
+import DropDownList from './components/DropDownList';
+import TableComponent from './components/Table';
+import { CiViewTable } from "react-icons/ci";
+import { GoGraph } from "react-icons/go";
 
 let acutal_dataset = {
     _id: null,
@@ -23,6 +27,8 @@ const Results = () => {
     const [showModal, setShowModal] = useState(false);
     const [config, setConfig] = useState({isEnable: false})
 
+    const [showChart, setShowChart] = useState(true);
+
     const [chartData, setChartData] = useState(
         {
             x: [1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020],
@@ -36,6 +42,7 @@ const Results = () => {
 
     const [actualModel, setActualModel] = useState('svm');
 
+    const [modelTrainsList, setModelTrainsList] = useState([])
 
     const handleOpenModal = () => {
         setShowModal(true);
@@ -48,7 +55,7 @@ const Results = () => {
     const onCustomTrain = (config) => {
         setConfig(config)
 
-        trainModel()
+        trainModel(null, null, config)
     }
 
     const handleDatasetSelect = (dataset) => {
@@ -59,14 +66,15 @@ const Results = () => {
         trainModel()
     };
 
-    const trainModel = (auxAtualModel=null) => {
+    // train model
+    const trainModel = (auxActualModel=null, customTrainingId=null, customConfig=null) => {
 
-        let actualModelRequest = auxAtualModel != null ? auxAtualModel : actualModel;
+        let actualModelRequest = auxActualModel != null ? auxActualModel : actualModel;
 
-        console.log(config);
         CallApi.GetCharts(acutal_dataset['file_id'], 
-            acutal_dataset[actualModelRequest].length > 0 ? acutal_dataset[actualModelRequest][0]["id"] : null, 
-            actualModelRequest, acutal_dataset['_id'], config)
+            acutal_dataset[actualModelRequest].length > 0 ? customTrainingId != null ? customTrainingId : acutal_dataset[actualModelRequest][0]["id"] : null, 
+            actualModelRequest, acutal_dataset['_id'],
+            customConfig != null ? customConfig : config)
         .then((response) => {
         setChartData(
             {
@@ -78,17 +86,33 @@ const Results = () => {
             }
         );
         setHighlightIndex(response['hightlight'])
-        });  
+        });
+        handleChangeModelTrainsList(actualModel); // update list
     }
 
+    //
     const handleModelChange = (event) => {
         setActualModel(event.target.value);
         if (acutal_dataset._id != null) {
-            trainModel(event.target.value)
+            trainModel(event.target.value) //
+            handleChangeModelTrainsList(event.target.value) // update list
             CallApi.GetDatasetById(acutal_dataset['_id']).then((data) => {
                 acutal_dataset = data; 
             });        }
     };
+
+    // refresh list dates models
+    const handleChangeModelTrainsList = (model) => {
+        setModelTrainsList(acutal_dataset[model].map((obj, index) => 
+            obj["date"] ? `${index + 1}. ${obj["date"]}` : `${index + 1}`
+        ));
+        
+    }
+
+    // change graph when select a date in models list
+    const handleChangeTrainigGraph = (index) => {
+        trainModel(null, acutal_dataset[actualModel][index]["id"]);
+    }
 
     return (
         <div className="flex flex-row tp-10 ml-10">
@@ -119,12 +143,52 @@ const Results = () => {
                             <option value="arima">ARIMA</option>
                         </select>
                     </div>
+
+                    <div>
+                        <DropDownList dates={modelTrainsList} handleChangeTrainigGraph={handleChangeTrainigGraph}/>
+                    </div>
                 </div>
 
                 <AdvancedOptions model={actualModel} onCustomTrain={onCustomTrain}/>
             </div>
             
-            <Charts dataset={chartData} highlightIndex={highlightIndex} />
+
+
+            <div className="w-200">
+                <div className="flex gap-4 ml-10 mt-1">
+                    <button
+                    className={`p-2 rounded-lg transition ${
+                showChart ? "bg-blue-500 text-white" : "bg-gray-200"
+                    }`}
+                    onClick={() => setShowChart(true)}
+                    >
+                    <GoGraph size={20} />
+                    </button>
+                    <button
+                    className={`p-2 rounded-lg transition ${
+                !showChart ? "bg-blue-500 text-white" : "bg-gray-200"
+                    }`}
+                    onClick={() => setShowChart(false)}
+                    >
+                    <CiViewTable size={20} />
+                    </button>
+                </div>
+
+                <div className="w-full p-4">
+                    {showChart ? (
+                    <Charts dataset={chartData} highlightIndex={highlightIndex} />
+                    ) : (
+                    <TableComponent
+                        data={{
+                        x: chartData.x != null ? chartData.x : [],
+                        y: chartData.y != null ? chartData.y : []
+                        }}
+                        highlightIndex={highlightIndex}
+                    />
+                    )}
+                </div>
+                </div>
+            
 
             {/* Modal Render */}
             {showModal && (

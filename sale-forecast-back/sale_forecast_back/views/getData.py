@@ -68,7 +68,7 @@ def get_files_by_id(request):
         # get forecast
         if file_train_id == None or config["isEnable"]:
             response_forecast = get_forecast(response_file, model_type, config) # if it is not trained
-            save_trained_model(response_forecast, model_type, dataset_id)
+            save_trained_model(response_forecast, model_type, dataset_id, config)
         else:
             response_forecast = get_trained_model(model_type, file_train_id) # if it is trained
 
@@ -90,6 +90,6 @@ def get_files_by_id(request):
         return JsonResponse({"error": str(e)}, status=500)
     
 
-def save_trained_model(data, model_type, dataset_id):
+def save_trained_model(data, model_type, dataset_id, config):
     trained_file_id = insert_trained_file(data, model_type)
-    save_training_data_in_datasets(model_type, str(trained_file_id), dataset_id)
+    save_training_data_in_datasets(model_type, str(trained_file_id), dataset_id, config)

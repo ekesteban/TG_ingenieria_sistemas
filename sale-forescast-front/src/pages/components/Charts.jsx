@@ -69,7 +69,7 @@ const GraphicCharts = ({ dataset, highlightIndex = 0 }) => {
     myChart.setOption(option);
   }, [dataset, highlightIndex]);
 
-  return <div id="chart" style={{ width: '110%', height: '600px' }}></div>;
+  return <div id="chart" style={{ width: '120%', height: '580px' }}></div>;
 };
 
 export default GraphicCharts;
