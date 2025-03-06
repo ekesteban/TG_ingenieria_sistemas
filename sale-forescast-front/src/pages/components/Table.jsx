@@ -7,7 +7,7 @@ const DataTable = ({ data, highlightIndex }) => {
         <thead>
           <tr className="bg-gray-200">
             <th className="border px-4 py-2">Dia</th>
-            <th className="border px-4 py-2">Venta total</th>
+            <th className="border px-4 py-2">Unidades vendidas</th>
           </tr>
         </thead>
         <tbody>

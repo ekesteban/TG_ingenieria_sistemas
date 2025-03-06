@@ -24,7 +24,7 @@ const AdvancedOptions = ({ model, onCustomTrain}) => {
             {/* Renderiza solo si el checkbox está activado */}
             {isChecked && (
                 <div className="mt-4 p-4 border rounded-lg shadow">
-                    {model === "lstm" && <p>Contenido para el modelo lstm</p>}
+                    {model === "lstm" && <LstmOption onHandleButton={onHandleButton}/>}
                     {model === "svm" && <SvmOption onHandleButton={onHandleButton}/>}
                     {model === "arima" && <p>Contenido para el modelo arima</p>}
                 </div>
@@ -199,6 +199,106 @@ const SvmOption = ({ onHandleButton }) => {
         </div>
     );
 };
+
+const LstmOption = ({ onHandleButton }) => {
+    const [days, setDays] = useState(30);
+    const [timeStep, setTimeStep] = useState(10);
+    const [lstmUnits, setLstmUnits] = useState(100);
+    const [dropoutRate, setDropoutRate] = useState(0.2);
+    const [epochs, setEpochs] = useState(2);
+    const [batchSize, setBatchSize] = useState(2);
+
+    const handleSaveConfig = () => {
+        const lstmConfig = {
+          isEnable: true,
+          daysToPredict: days,
+          timeStep: timeStep,
+          lstmUnits: lstmUnits ,
+          dropoutRate : dropoutRate,
+          epochs: epochs ,
+          batchSize: batchSize
+          
+        };
+        onHandleButton(lstmConfig);
+      };
+
+    return (
+        <div className="flex flex-col">
+            <SelectDays setDays={setDays} />
+
+            <div className="flex flex-col mt-5">
+                <div className="flex flex-row">
+                <div>
+
+                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">
+                        Time Step
+                        <input
+                            type="number"
+                            value={timeStep}
+                            onChange={(e) => setTimeStep(Number(e.target.value))}
+                            className="w-50 p-2 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+
+                        />
+                    </label>
+                    
+                    <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">
+                        LSTM Units
+                        <input
+                            type="number"
+                            value={lstmUnits}
+                            onChange={(e) => setLstmUnits(Number(e.target.value))}
+                            className="w-50 p-2 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        />
+                    </label>
+                    
+                    <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">
+                        Dropout Rate
+                        <input
+                            type="number"
+                            step="0.01"
+                            value={dropoutRate}
+                            onChange={(e) => setDropoutRate(Number(e.target.value))}
+                            className="w-50 p-2 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        />
+                    </label>
+                    
+                </div>
+
+                <div className="ml-5">
+                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">
+                        Epoch
+                        <input
+                            type="number"
+                            value={epochs}
+                            onChange={(e) => setEpochs(Number(e.target.value))}
+                            className="w-50 p-2 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        />
+                    </label>
+                    
+                    <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">
+                        Batch Size
+                        <input
+                            type="number"
+                            value={batchSize}
+                            onChange={(e) => setBatchSize(Number(e.target.value))}
+                            className="w-50 p-2 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        />
+                    </label>
+                </div>
+                </div>
+
+                    <button 
+                    className="mt-3 bg-blue-500 text-white px-6 py-2 rounded-2xl shadow-md hover:bg-blue-6  00 transition-all"
+                    onClick={handleSaveConfig}
+                        >
+                        Entrenar
+                    </button>
+            </div>
+
+        </div>
+    );
+};
+
 
 
 export default AdvancedOptions

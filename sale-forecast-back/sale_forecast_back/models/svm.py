@@ -15,7 +15,7 @@ def get_svm(data, config):
         'epsilon': [0.1, 1, 5, 10]
     }
 
-    days_to_predict = 100
+    days_to_predict = 90
 
     if config["isEnable"]:
         days_to_predict = config["daysToPredict"]

@@ -14,6 +14,14 @@ def get_lstm(data, config):
     batch_size = 2
     future_days = 90
 
+    if config['isEnable']:
+        time_step = config["timeStep"]
+        lstm_units = config["lstmUnits"]
+        dropout_rate = config["dropoutRate"]
+        epochs = config["epochs"]
+        batch_size = config["batchSize"]
+        future_days = config["daysToPredict"]
+
     # Extraer datos del request
     df = pd.DataFrame(data)
     df["date"] = pd.to_datetime(df["date"])
