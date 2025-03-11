@@ -44,6 +44,8 @@ const Results = () => {
 
     const [modelTrainsList, setModelTrainsList] = useState([])
 
+    const [selectedIndex, setSelectedIndex] = useState(0); // default list value
+
     const handleOpenModal = () => {
         setShowModal(true);
     };
@@ -53,9 +55,9 @@ const Results = () => {
     };
 
     const onCustomTrain = (config) => {
-        setConfig(config)
 
         trainModel(null, null, config)
+
     }
 
     const handleDatasetSelect = (dataset) => {
@@ -67,13 +69,16 @@ const Results = () => {
     };
 
     // train model
-    const trainModel = (auxActualModel=null, customTrainingId=null, customConfig=null) => {
+    const trainModel = (auxActualModel=null, customTrainingId=null, customConfig=null, refresh=null) => {
 
         let actualModelRequest = auxActualModel != null ? auxActualModel : actualModel;
 
+        customTrainingId = customTrainingId == null ? acutal_dataset[actualModelRequest][acutal_dataset[actualModelRequest].length-1]["id"] : customTrainingId;
+
         CallApi.GetCharts(acutal_dataset['file_id'], 
-            acutal_dataset[actualModelRequest].length > 0 ? customTrainingId != null ? customTrainingId : acutal_dataset[actualModelRequest][0]["id"] : null, 
-            actualModelRequest, acutal_dataset['_id'],
+            acutal_dataset[actualModelRequest].length > 0 ? customTrainingId : null, 
+            actualModelRequest,
+            acutal_dataset['_id'],
             customConfig != null ? customConfig : config)
         .then((response) => {
         setChartData(
@@ -86,32 +91,41 @@ const Results = () => {
             }
         );
         setHighlightIndex(response['hightlight'])
+
+        refresh == null ? refreshDataset(actualModelRequest) : handleChangeModelTrainsList(actualModelRequest); //refresh Dataset
         });
-        handleChangeModelTrainsList(actualModel); // update list
+
     }
 
-    //
+    // change model
     const handleModelChange = (event) => {
         setActualModel(event.target.value);
         if (acutal_dataset._id != null) {
-            trainModel(event.target.value) //
-            handleChangeModelTrainsList(event.target.value) // update list
-            CallApi.GetDatasetById(acutal_dataset['_id']).then((data) => {
-                acutal_dataset = data; 
-            });        }
+            trainModel(event.target.value) //do a lot of things
+        }
     };
 
+    // refrsh dataset
+    const refreshDataset = (actualModelRequest) => {
+        CallApi.GetDatasetById(acutal_dataset['_id']).then((data) => {
+            console.debug(data);
+            acutal_dataset = data; 
+            handleChangeModelTrainsList(actualModelRequest, true);
+        }); 
+    }
+
     // refresh list dates models
-    const handleChangeModelTrainsList = (model) => {
+    const handleChangeModelTrainsList = (model, train=null) => {
         setModelTrainsList(acutal_dataset[model].map((obj, index) => 
             obj["date"] ? `${index + 1}. ${obj["date"]}` : `${index + 1}`
         ));
-        
+        if (train != null) setSelectedIndex(acutal_dataset[model].length-1);
     }
 
     // change graph when select a date in models list
     const handleChangeTrainigGraph = (index) => {
-        trainModel(null, acutal_dataset[actualModel][index]["id"]);
+        setSelectedIndex(index);
+        trainModel(null, acutal_dataset[actualModel][index]["id"], null, true);
     }
 
     return (
@@ -145,7 +159,7 @@ const Results = () => {
                     </div>
 
                     <div>
-                        <DropDownList dates={modelTrainsList} handleChangeTrainigGraph={handleChangeTrainigGraph}/>
+                        <DropDownList dates={modelTrainsList} handleChangeTrainigGraph={handleChangeTrainigGraph} selectedIndex={selectedIndex}/>
                     </div>
                 </div>
 

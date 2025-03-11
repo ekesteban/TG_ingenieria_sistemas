@@ -63,6 +63,12 @@ const GetDatasetById = async (id) =>{
 const GetCharts = async (file_id, training_id, model_type, dataset_id, config_body) =>{
     const url = new URL(base_url + "get-file");
 
+    console.log("File ID:", file_id);
+    console.log("Training ID:", training_id);
+    console.log("Model Type:", model_type);
+    console.log("Dataset ID:", dataset_id);
+    console.log("Config Body:", JSON.stringify(config_body, null, 2));
+
     url.searchParams.append("file_id", file_id);
     training_id != null ? url.searchParams.append("training_id", training_id) : null;
     url.searchParams.append("model_type", model_type);

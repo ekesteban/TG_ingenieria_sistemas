@@ -1,11 +1,10 @@
 import { useState } from "react";
 
-export default function DateDropdown({ dates, handleChangeTrainigGraph }) {
-  const [selectedIndex, setSelectedIndex] = useState(0); // Valor por defecto: primer elemento
+export default function DateDropdown({ dates, handleChangeTrainigGraph, selectedIndex }) {
+  //const [selectedIndex, setSelectedIndex] = useState(0);
 
   const handleChange = (event) => {
     const index = Number(event.target.value);
-    setSelectedIndex(index);
     handleChangeTrainigGraph(index); 
   };
 
