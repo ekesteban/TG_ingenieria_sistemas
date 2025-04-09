@@ -18,14 +18,14 @@ let acutal_dataset = {
     file_id: "67ac11b8fc1dd03b8fec4cf6",
     svm: [],
     lstm: [],
-    arima: []
+    sarima: []
 };
 
 
 const Results = () => {
     const [selectedDataset] = useState('');
     const [showModal, setShowModal] = useState(false);
-    const [config, setConfig] = useState({isEnable: false})
+    const [config] = useState({isEnable: false})
 
     const [showChart, setShowChart] = useState(true);
 
@@ -68,15 +68,15 @@ const Results = () => {
         trainModel()
     };
 
-    // train model
+    // train model auxactualmodel: el modelo actual, customTrainingId
     const trainModel = (auxActualModel=null, customTrainingId=null, customConfig=null, refresh=null) => {
 
         let actualModelRequest = auxActualModel != null ? auxActualModel : actualModel;
 
-        customTrainingId = customTrainingId == null ? acutal_dataset[actualModelRequest][acutal_dataset[actualModelRequest].length-1]["id"] : customTrainingId;
+        customTrainingId = customTrainingId == null ? acutal_dataset[actualModelRequest].length > 0 ? acutal_dataset[actualModelRequest][acutal_dataset[actualModelRequest].length-1]["id"] : null : customTrainingId;
 
         CallApi.GetCharts(acutal_dataset['file_id'], 
-            acutal_dataset[actualModelRequest].length > 0 ? customTrainingId : null, 
+            customTrainingId, 
             actualModelRequest,
             acutal_dataset['_id'],
             customConfig != null ? customConfig : config)
@@ -154,7 +154,7 @@ const Results = () => {
                             onChange={handleModelChange}>
                             <option value="svm">SVM</option>
                             <option value="lstm">LSTM</option>
-                            <option value="arima">ARIMA</option>
+                            <option value="sarima">SARIMA</option>
                         </select>
                     </div>
 

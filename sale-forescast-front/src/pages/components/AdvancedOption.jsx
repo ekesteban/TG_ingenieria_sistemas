@@ -26,7 +26,7 @@ const AdvancedOptions = ({ model, onCustomTrain}) => {
                 <div className="mt-4 p-4 border rounded-lg shadow">
                     {model === "lstm" && <LstmOption onHandleButton={onHandleButton}/>}
                     {model === "svm" && <SvmOption onHandleButton={onHandleButton}/>}
-                    {model === "arima" && <p>Contenido para el modelo arima</p>}
+                    {model === "sarima" && <SarimaConfig onHandleButton={onHandleButton}/>}
                 </div>
             )}
         </div>
@@ -298,6 +298,144 @@ const LstmOption = ({ onHandleButton }) => {
         </div>
     );
 };
+
+
+const SarimaConfig = ({ onHandleButton }) => {
+    const MIN_VALUE = 0;
+    const MAX_VALUE = 7;
+    const S_MIN_VALUE = 0;
+    const S_MAX_VALUE = 31;
+
+    const [p, setP] = useState(1);
+    const [d, setD] = useState(1);
+    const [q, setQ] = useState(1);
+    const [P, setUpperP] = useState(1);
+    const [D, setUpperD] = useState(1);
+    const [Q, setUpperQ] = useState(0);
+    const [s, setS] = useState(7);
+    const [days, setDays] = useState(30);
+
+    const handleChange = (setState, value) => {
+        const newValue = parseInt(value, 10);
+        if (!isNaN(newValue) && newValue >= MIN_VALUE && newValue <= MAX_VALUE) {
+            setState(newValue);
+        }
+    };
+
+    const handleSaveConfig = () => {
+        const arimaConfig = {
+            isEnable: true,
+            paramGrid: {
+                p, d, q, P, D, Q, s
+            },
+            daysToPredict: days,
+        };
+        onHandleButton(arimaConfig);
+    };
+
+    return (
+        <div className="flex flex-col">
+            <SelectDays setDays={setDays} />
+
+            <div className="mt-6">
+                <div className="flex flex-col mt-2">
+                    <div className="flex flex-row space-x-4">
+                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">p
+                            <input
+                                type="number"
+                                value={p}
+                                onChange={(e) => handleChange(setP, e.target.value)}
+                                className="border rounded px-2 py-1 w-20"
+                                min={MIN_VALUE}
+                                max={MAX_VALUE}
+                            />
+                        </label>
+
+                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">d
+                            <input
+                                type="number"
+                                value={d}
+                                onChange={(e) => handleChange(setD, e.target.value)}
+                                className="border rounded px-2 py-1 w-20"
+                                min={MIN_VALUE}
+                                max={MAX_VALUE}
+                            />
+                        </label>
+
+                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">q
+                            <input
+                                type="number"
+                                value={q}
+                                onChange={(e) => handleChange(setQ, e.target.value)}
+                                className="border rounded px-2 py-1 w-20"
+                                min={MIN_VALUE}
+                                max={MAX_VALUE}
+                            />
+                        </label>
+
+                    </div>
+                    <div className="flex flex-row space-x-4">
+                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">P
+                            <input
+                                type="number"
+                                value={P}
+                                onChange={(e) => handleChange(setUpperP, e.target.value)}
+                                className="border rounded px-2 py-1 w-20"
+                                min={MIN_VALUE}
+                                max={MAX_VALUE}
+                            />
+                        </label>
+
+                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">D
+                            <input
+                                type="number"
+                                value={D}
+                                onChange={(e) => handleChange(setUpperD, e.target.value)}
+                                className="border rounded px-2 py-1 w-20"
+                                min={MIN_VALUE}
+                                max={MAX_VALUE}
+                            />
+                        </label>
+
+                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">Q
+                            <input
+                                type="number"
+                                value={Q}
+                                onChange={(e) => handleChange(setUpperQ, e.target.value)}
+                                className="border rounded px-2 py-1 w-20"
+                                min={MIN_VALUE}
+                                max={MAX_VALUE}
+                            />
+                        </label>
+
+                    </div>
+                    <div className="flex flex-row">
+                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">s
+                        <input
+                            type="number"
+                            value={s}
+                            onChange={(e) => handleChange(setS, e.target.value)}
+                            className="border rounded px-2 py-1 w-20"
+                            min={S_MIN_VALUE}
+                            max={S_MAX_VALUE}
+                        />
+                        </label>
+
+                    </div>
+                    
+                </div>
+            </div>
+
+            <button 
+                className="mt-3 bg-blue-500 text-white px-6 py-2 rounded-2xl shadow-md hover:bg-blue-600 transition-all"
+                onClick={handleSaveConfig}
+            >
+                Entrenar
+            </button>
+        </div>
+    );
+};
+
 
 
 
