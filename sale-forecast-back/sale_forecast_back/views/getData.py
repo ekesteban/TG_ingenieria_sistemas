@@ -92,4 +92,4 @@ def get_files_by_id(request):
 
 def save_trained_model(data, model_type, dataset_id, config):
     trained_file_id = insert_trained_file(data, model_type)
-    save_training_data_in_datasets(model_type, str(trained_file_id), dataset_id, config)
+    save_training_data_in_datasets(model_type, str(trained_file_id), dataset_id, config, data["metrics"])

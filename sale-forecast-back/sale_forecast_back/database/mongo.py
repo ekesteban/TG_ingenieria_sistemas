@@ -23,10 +23,8 @@ def insert_file(dataset):
         db = get_database()  
         collection = db["files"] 
         result = collection.insert_one(dataset)
-        print(f"Dataset insertado con éxito. ID: {result.inserted_id}")
         return result.inserted_id
     except Exception as e:
-        print(f"Error al insertar el dataset: {e}")
         raise e
     
 def getDatasetById(dataset_id):
@@ -38,10 +36,8 @@ def getDatasetById(dataset_id):
         result = collection.find_one({"_id": ObjectId(dataset_id)})
         
         if result:
-            print(f"Dataset encontrado: {result}")
             return result
         else:
-            print("No se encontró ningún dataset con ese ID.")
             return None
     except Exception as e:
         print(f"Error al obtener el dataset: {e}")
@@ -58,7 +54,6 @@ def getDatasetsByNameDate(filter_query, sort_order):
     for item in results:
         item['_id'] = str(item['_id'])  # Convert ObjectId to string
         response.append(item)
-    print(response)
     return response
 
 def get_dataset_by_id_query(id):
@@ -68,7 +63,6 @@ def get_dataset_by_id_query(id):
     
     response['_id'] = str(response['_id']) # Convert ObjectId to string
 
-    print(response)
     return response
 
 
@@ -89,10 +83,8 @@ def insert_dataset(dataset):
         db = get_database()  
         collection = db["datasets"] 
         result = collection.insert_one(dataset)
-        print(f"Dataset insertado con éxito. ID: {result.inserted_id}")
         return result.inserted_id
     except Exception as e:
-        print(f"Error al insertar el dataset: {e}")
         raise e
     
 def get_trained_model(model_type, model_file_id):
@@ -106,14 +98,15 @@ def get_trained_model(model_type, model_file_id):
     else:
         return None
     
-def save_training_data_in_datasets(model_type, model_file_id, dataset_id, config):
+def save_training_data_in_datasets(model_type, model_file_id, dataset_id, config, metrics):
     db = get_database()  
     collection = db["datasets"] 
 
     save_trained_data = {
         "id": model_file_id,
         "advanced_config": config,
-        "date": datetime.today().strftime('%Y-%m-%d')
+        "date": datetime.today().strftime('%Y-%m-%d'),
+        "metrics": metrics
     }
 
     collection.update_one(

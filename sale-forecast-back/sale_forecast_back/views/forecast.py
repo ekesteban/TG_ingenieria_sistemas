@@ -9,7 +9,7 @@ def get_forecast(data, model_type, config):
 
     if model_type == "svm":
         return svm.get_svm(data, config)
-    if model_type == "arima":
+    if model_type == "sarima":
         return sarima.get_sarima(data, config)
     if model_type == "lstm":
         return lstm.get_lstm(data, config)

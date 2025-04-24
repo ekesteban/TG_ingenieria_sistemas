@@ -64,17 +64,24 @@ def get_lstm(data, config):
     model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size, verbose=0)
 
     # === PREDICCIONES TEST ===
-    y_pred_scaled = model.predict(X_test, verbose=0)
-    y_pred = scaler.inverse_transform(y_pred_scaled)
+    test_predict = model.predict(X_test, verbose=0)
+    y_pred = scaler.inverse_transform(test_predict)
     y_true = scaler.inverse_transform(y_test.reshape(-1, 1))
 
     # === MÉTRICAS ===
     def mean_absolute_percentage_error(y_true, y_pred):
-        return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+        mask = y_true != 0
+        if np.any(mask):
+            return np.mean(np.abs((y_true[mask] - y_pred[mask]) / y_true[mask])) * 100
+        return float('nan')
 
     mse = mean_squared_error(y_true, y_pred)
     mae = mean_absolute_error(y_true, y_pred)
     mape = mean_absolute_percentage_error(y_true, y_pred)
+
+    print(f'MSE: {mse:.3f}')
+    print(f'MAE: {mae:.3f}')
+    print(f"- MAPE : {mape:.2f}%" if not np.isnan(mape) else "- MAPE : No disponible (valores reales = 0)")
 
     # === PREDICCIÓN FUTURA ===
     def predict_future(model, data, time_step, future_days):
@@ -97,8 +104,8 @@ def get_lstm(data, config):
         "quantity": future_preds_inversed.tolist(),
         "date": future_dates.strftime("%Y-%m-%d").tolist(),
         "metrics": {
-            "mse": float(round(mse, 3)),
-            "mae": float(round(mae, 3)),
-            "mape": float(round(mape, 3))
+            "mse": round(mse, 3),
+            "mae": round(mae, 3),
+            "mape": f"{round(mape, 2)}%" if not np.isnan(mape) else "N/A"
         }
     }

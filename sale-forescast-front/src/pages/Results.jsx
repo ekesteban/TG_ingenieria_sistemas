@@ -186,6 +186,13 @@ const Results = () => {
                     >
                     <CiViewTable size={20} />
                     </button>
+                    <div>
+                    <p className="text-lg font-semibold text-gray-700">
+                        MSE: {acutal_dataset[actualModel][selectedIndex]?.metrics?.mse ?? 'N/A'},     
+                        MAE: {acutal_dataset[actualModel][selectedIndex]?.metrics?.mae ?? 'N/A'},     
+                        MAPE: {acutal_dataset[actualModel][selectedIndex]?.metrics?.mape ?? 'N/A'},    
+                    </p>
+                    </div>
                 </div>
 
                 <div className="w-full p-4">
