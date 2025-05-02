@@ -83,6 +83,8 @@ const SvmOption = ({ onHandleButton }) => {
 
     const [days, setDays] = useState(30);
 
+    const [kernel, setKernel] = useState("rbf");
+
     const handleChange = (setState, index, value) => {
         const newValue = parseFloat(value);
         if (!isNaN(newValue) && newValue !== 0) {
@@ -118,6 +120,7 @@ const SvmOption = ({ onHandleButton }) => {
     const handleSaveConfig = () => {
         const svmConfig = {
           isEnable: true,
+          kernel: kernel,
           paramGrid: {
             C:  c,
             gamma: gamma,
@@ -132,6 +135,19 @@ const SvmOption = ({ onHandleButton }) => {
     return (
         <div className="flex flex-col">
             <SelectDays setDays={setDays}/>
+
+            <label className="mt-4 font-medium text-gray-700 flex flex-col">
+                Kernel
+                <select
+                    value={kernel}
+                    onChange={(e) => setKernel(e.target.value)}
+                    className="w-50 p-2 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                >
+                    <option value="rbf">RBF</option>
+                    <option value="linear">Linear</option>
+                    <option value="sigmoid">Sigmoid</option>
+                </select>
+            </label>
 
             <div className="mt-6">
                 {/* Checkbox para mostrar opciones */}
@@ -207,6 +223,7 @@ const LstmOption = ({ onHandleButton }) => {
     const [dropoutRate, setDropoutRate] = useState(0.2);
     const [epochs, setEpochs] = useState(2);
     const [batchSize, setBatchSize] = useState(2);
+    const [optimizer, setOptimizer] = useState("adam");
 
     const handleSaveConfig = () => {
         const lstmConfig = {
@@ -216,8 +233,8 @@ const LstmOption = ({ onHandleButton }) => {
           lstmUnits: lstmUnits ,
           dropoutRate : dropoutRate,
           epochs: epochs ,
-          batchSize: batchSize
-          
+          batchSize: batchSize,
+          optimizer: optimizer,
         };
         onHandleButton(lstmConfig);
       };
@@ -284,6 +301,20 @@ const LstmOption = ({ onHandleButton }) => {
                             className="w-50 p-2 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                         />
                     </label>
+
+                    <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700 mt-2">
+                    Optimizador
+                    <select
+                        value={optimizer}
+                        onChange={(e) => setOptimizer(e.target.value)}
+                        className="w-50 p-2 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    >
+                        <option value="adam">Adam</option>
+                        <option value="sgd">SGD</option>
+                        <option value="rmsprop">RMSprop</option>
+                        <option value="adagrad">Adagrad</option>
+                    </select>
+                </label>
                 </div>
                 </div>
 

@@ -13,10 +13,12 @@ def get_svm(data, config):
         'epsilon': [0.01, 0.1, 1]
     }
     days_to_predict = 90
+    kernelChoice = 'rbf'
 
     if config.get("isEnable", False):
         days_to_predict = config.get("daysToPredict", days_to_predict)
         param_grid = config.get("paramGrid", param_grid)
+        kernelChoice = config.get("kernel")
 
     # === CONVERTIR A DATAFRAME Y LIMPIAR ===
     df = pd.DataFrame(data).dropna()
@@ -48,7 +50,7 @@ def get_svm(data, config):
     y_train, y_test = y[:train_size], y[train_size:]
 
     # === ENTRENAR MODELO CON GRIDSEARCH ===
-    grid_search = GridSearchCV(SVR(kernel='rbf'), param_grid, scoring='neg_mean_squared_error', cv=5, n_jobs=-1)
+    grid_search = GridSearchCV(SVR(kernel=kernelChoice), param_grid, scoring='neg_mean_squared_error', cv=5, n_jobs=-1)
     grid_search.fit(X_train, y_train)
     best_model = grid_search.best_estimator_
 

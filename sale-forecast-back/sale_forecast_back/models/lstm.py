@@ -3,6 +3,9 @@ import pandas as pd
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.optimizers import SGD
+from tensorflow.keras.optimizers import RMSprop
+from tensorflow.keras.optimizers import Adagrad
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 
@@ -15,7 +18,7 @@ def get_lstm(data, config):
     batch_size = 2
     learning_rate = 0.001
     future_days = 90
-
+    optimizerChoice = Adam(learning_rate=learning_rate)
     if config.get('isEnable', False):
         time_step = config.get("timeStep", time_step)
         lstm_units = config.get("lstmUnits", lstm_units)
@@ -24,6 +27,17 @@ def get_lstm(data, config):
         batch_size = config.get("batchSize", batch_size)
         future_days = config.get("daysToPredict", future_days)
         learning_rate = config.get("learningRate", learning_rate)
+
+        optimizer_name = config.get("optimizer", "Adam").lower()
+
+        if optimizer_name == "sgd":
+            optimizerChoice = SGD(learning_rate=learning_rate)
+        elif optimizer_name == "rmsprop":
+            optimizerChoice = RMSprop(learning_rate=learning_rate)
+        elif optimizer_name == "adagrad":
+            optimizerChoice = Adagrad(learning_rate=learning_rate)
+        else:
+            optimizerChoice = Adam(learning_rate=learning_rate)
 
     # === PREPARAR DATA ===
     df = pd.DataFrame(data)
@@ -60,7 +74,7 @@ def get_lstm(data, config):
         Dense(units=1)
     ])
 
-    model.compile(optimizer=Adam(learning_rate=learning_rate), loss='mean_squared_error')
+    model.compile(optimizer=optimizerChoice, loss='mean_squared_error')
     model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size, verbose=0)
 
     # === PREDICCIONES TEST ===
