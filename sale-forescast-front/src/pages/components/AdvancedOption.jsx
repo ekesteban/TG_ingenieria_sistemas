@@ -56,7 +56,7 @@ const SelectDays = ({ setDays }) => {
     };
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col" title="Introduce un valor entre 1 y 90 días">
             <label className="mb-2 font-medium text-gray-700">Días a predecir</label>
             <input
                 type="number"
@@ -136,7 +136,7 @@ const SvmOption = ({ onHandleButton }) => {
         <div className="flex flex-col">
             <SelectDays setDays={setDays}/>
 
-            <label className="mt-4 font-medium text-gray-700 flex flex-col">
+            <label className="mt-4 font-medium text-gray-700 flex flex-col" title="Tipo de núcleo para transformar los datos de entrada">
                 Kernel
                 <select
                     value={kernel}
@@ -163,7 +163,7 @@ const SvmOption = ({ onHandleButton }) => {
 
                 <div className="mt-2">
                 <div>
-                            <label className="mb-2 font-medium text-gray-700">C</label>
+                            <label className="mb-2 font-medium text-gray-700" title="Parámetro C: controla la penalización por errores de clasificación">C</label>
                             <div className="flex gap-2">
                                 {c.map((value, index) => (
                                     <input
@@ -176,7 +176,7 @@ const SvmOption = ({ onHandleButton }) => {
                                     />
                                 ))}
                             </div>
-                            <label className="mb-2 font-medium text-gray-700">Gamma</label>
+                            <label className="mb-2 font-medium text-gray-700"  title="Parámetro Gamma: define la influencia de cada punto de entrenamiento">Gamma</label>
                             <div className="flex gap-2">
                                 {gamma.map((value, index) => (
                                     <input
@@ -189,7 +189,7 @@ const SvmOption = ({ onHandleButton }) => {
                                     />
                                 ))}
                             </div>
-                            <label className="mb-2 font-medium text-gray-700">Epsilon</label>
+                            <label className="mb-2 font-medium text-gray-700" title="Parámetro Epsilon: margen permitido de error en regresión SVM">Epsilon</label>
                             <div className="flex gap-2">
                                 {epsilon.map((value, index) => (
                                     <input
@@ -247,7 +247,7 @@ const LstmOption = ({ onHandleButton }) => {
                 <div className="flex flex-row">
                 <div>
 
-                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">
+                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700" title="Número de pasos de tiempo anteriores que el modelo usará para predecir">
                         Time Step
                         <input
                             type="number"
@@ -258,7 +258,7 @@ const LstmOption = ({ onHandleButton }) => {
                         />
                     </label>
                     
-                    <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">
+                    <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700" title="Número de observaciones anteriores que se usarán para la predicción">
                         LSTM Units
                         <input
                             type="number"
@@ -268,7 +268,7 @@ const LstmOption = ({ onHandleButton }) => {
                         />
                     </label>
                     
-                    <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">
+                    <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700" title="Número de veces que el modelo verá todos los datos durante el entrenamiento">
                         Dropout Rate
                         <input
                             type="number"
@@ -282,7 +282,7 @@ const LstmOption = ({ onHandleButton }) => {
                 </div>
 
                 <div className="ml-5">
-                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">
+                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700" title="Cantidad de iteraciones completas sobre los datos de entrenamiento">
                         Epoch
                         <input
                             type="number"
@@ -292,7 +292,7 @@ const LstmOption = ({ onHandleButton }) => {
                         />
                     </label>
                     
-                    <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">
+                    <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700" title="Tamaño de los lotes de datos que se procesan en cada paso">
                         Batch Size
                         <input
                             type="number"
@@ -302,7 +302,7 @@ const LstmOption = ({ onHandleButton }) => {
                         />
                     </label>
 
-                    <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700 mt-2">
+                    <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700 mt-2" title="Algoritmo usado para ajustar los pesos del modelo durante el entrenamiento">
                     Optimizador
                     <select
                         value={optimizer}
@@ -371,7 +371,8 @@ const SarimaConfig = ({ onHandleButton }) => {
             <div className="mt-6">
                 <div className="flex flex-col mt-2">
                     <div className="flex flex-row space-x-4">
-                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">p
+                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700" title="Orden del componente autoregresivo no estacional (AR)">
+                            p
                             <input
                                 type="number"
                                 value={p}
@@ -382,7 +383,8 @@ const SarimaConfig = ({ onHandleButton }) => {
                             />
                         </label>
 
-                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">d
+                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700" title="Número de diferenciaciones no estacionales (para hacer la serie estacionaria)">
+                            d
                             <input
                                 type="number"
                                 value={d}
@@ -393,7 +395,8 @@ const SarimaConfig = ({ onHandleButton }) => {
                             />
                         </label>
 
-                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">q
+                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700" title="Orden del componente de media móvil no estacional (MA)">
+                            q
                             <input
                                 type="number"
                                 value={q}
@@ -406,7 +409,8 @@ const SarimaConfig = ({ onHandleButton }) => {
 
                     </div>
                     <div className="flex flex-row space-x-4">
-                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">P
+                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700" title="Orden del componente autoregresivo estacional (AR estacional)">
+                            P
                             <input
                                 type="number"
                                 value={P}
@@ -417,7 +421,8 @@ const SarimaConfig = ({ onHandleButton }) => {
                             />
                         </label>
 
-                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">D
+                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700" title="Número de diferenciaciones estacionales">
+                            D
                             <input
                                 type="number"
                                 value={D}
@@ -428,7 +433,8 @@ const SarimaConfig = ({ onHandleButton }) => {
                             />
                         </label>
 
-                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">Q
+                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700" title="Orden del componente de media móvil estacional (MA estacional)">
+                            Q
                             <input
                                 type="number"
                                 value={Q}
@@ -441,7 +447,8 @@ const SarimaConfig = ({ onHandleButton }) => {
 
                     </div>
                     <div className="flex flex-row">
-                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700">s
+                        <label className="flex gap-1 flex-col mb-2 font-medium text-gray-700" title="Longitud del ciclo estacional (por ejemplo, 12 para datos mensuales)">
+                            s
                         <input
                             type="number"
                             value={s}

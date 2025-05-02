@@ -186,12 +186,18 @@ const Results = () => {
                     >
                     <CiViewTable size={20} />
                     </button>
-                    <div>
-                    <p className="text-lg font-semibold text-gray-700">
-                        MSE: {acutal_dataset[actualModel][selectedIndex]?.metrics?.mse ?? 'N/A'},     
-                        MAE: {acutal_dataset[actualModel][selectedIndex]?.metrics?.mae ?? 'N/A'},     
-                        MAPE: {acutal_dataset[actualModel][selectedIndex]?.metrics?.mape ?? 'N/A'},    
-                    </p>
+                    <div className='w-150'>
+                        <p className="text-lg font-semibold text-gray-700 space-x-4">
+                        <span title="Error cuadrático medio. Penaliza más los errores grandes.">
+                            MSE: {acutal_dataset[actualModel][selectedIndex]?.metrics?.mse ?? 'N/A'},
+                        </span>
+                        <span title="Error absoluto medio. Promedia las diferencias absolutas.">
+                            MAE: {acutal_dataset[actualModel][selectedIndex]?.metrics?.mae ?? 'N/A'},
+                        </span>
+                        <span title="Error porcentual absoluto medio. Indica el error promedio en porcentaje.">
+                            MAPE: {acutal_dataset[actualModel][selectedIndex]?.metrics?.mape ?? 'N/A'}
+                        </span>
+                        </p>
                     </div>
                 </div>
 
