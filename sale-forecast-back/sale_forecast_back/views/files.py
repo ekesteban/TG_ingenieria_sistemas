@@ -11,6 +11,7 @@ def upload_file(request):
         return JsonResponse({"error": "No se recibió ningún archivo"}, status=400)
 
     file = request.FILES["file"]
+    userId = request.POST['userId']
 
     try:
         # save file
@@ -18,7 +19,7 @@ def upload_file(request):
         file_response_id = insert_file(file_request)
 
         # save dataset
-        request_dataset = get_data_base_data("67a823cbf1c993640006cf59", file.name, file.name, str(file_response_id), "Description")
+        request_dataset = get_data_base_data(userId, file.name, file.name, str(file_response_id), "Description")
         dataset_response_id = insert_dataset(request_dataset)
 
         return JsonResponse({"id": str(dataset_response_id)}, status=200)

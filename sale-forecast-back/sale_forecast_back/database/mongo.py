@@ -122,3 +122,44 @@ def insert_trained_file(data, model_type):
         return result.inserted_id
     except Exception as e:
         raise e
+    
+def get_user_by_name(user_name, password):
+    db = get_database() 
+    collection = db["users"]  
+    user = collection.find_one({"user_name": user_name})
+    if user == None:
+        print("buscar por correo")
+        user = collection.find_one({"email": user_name})
+    
+    if user and password == user["password"]:
+        print(f"Login correcto. ID del usuario: {user['_id']}")
+        return {
+            'id': str(user['_id'])
+        }
+    else:
+        print("Credenciales inválidas.")
+
+
+def get_info_dashboard(userId):
+    db = get_database()
+    collection = db["datasets"]
+
+    print("Consultando dashboard para userId:", userId)
+
+    pipeline = [
+        {"$match": {"user_id": userId}},
+        {
+            "$group": {
+                "_id": None,
+                "total_datasets": {"$sum": 1},
+                "total_arima": {"$sum": {"$size": {"$ifNull": ["$arima", []]}}},
+                "total_svm": {"$sum": {"$size": {"$ifNull": ["$svm", []]}}},
+                "total_lstm": {"$sum": {"$size": {"$ifNull": ["$lstm", []]}}},
+            }
+        }
+    ]
+
+    result = list(collection.aggregate(pipeline))
+    print("Resultado:", result)
+
+    return result

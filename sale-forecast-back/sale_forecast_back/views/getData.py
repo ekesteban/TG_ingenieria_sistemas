@@ -9,6 +9,7 @@ from ..database.mongo import get_trained_model
 from ..database.mongo import save_training_data_in_datasets
 from ..database.mongo import insert_trained_file
 from ..database.mongo import get_dataset_by_id_query
+from ..database.mongo import get_info_dashboard
 
 from .forecast import get_forecast
 
@@ -93,3 +94,28 @@ def get_files_by_id(request):
 def save_trained_model(data, model_type, dataset_id, config):
     trained_file_id = insert_trained_file(data, model_type)
     save_training_data_in_datasets(model_type, str(trained_file_id), dataset_id, config, data["metrics"])
+
+
+@api_view(["GET"])
+def get_training_summary(request):
+    user_id = str(request.GET.get("userId"))
+    if not user_id:
+        return JsonResponse({"error": "Falta userId"}, status=400)
+
+    result = get_info_dashboard(user_id)
+    
+    if result:
+        data = result[0]
+        return JsonResponse({
+            "total_datasets": data["total_datasets"],
+            "total_arima": data["total_arima"],
+            "total_svm": data["total_svm"],
+            "total_lstm": data["total_lstm"],
+        })
+    else:
+        return JsonResponse({
+            "total_datasets": 0,
+            "total_arima": 0,
+            "total_svm": 0,
+            "total_lstm": 0,
+        })
