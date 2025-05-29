@@ -15,6 +15,9 @@ const UploadFiles = async (files) => {
     const formData = new FormData();
     files.forEach((file) => formData.append("file", file));
 
+    const userId = localStorage.getItem("userId");
+    formData.append("userId", userId);
+
     try {
         const response = await fetch(base_url + "upload-file", {
             method: "POST",
@@ -46,7 +49,7 @@ const GetDatasets = async (search) =>{
     url.searchParams.append("order", search.orderDesc ? "desc" : "asc");
     if (search.startDate) url.searchParams.append("startDate", search.startDate.toISOString().split('T')[0]);
     if (search.endDate) url.searchParams.append("endDate", search.endDate.toISOString().split('T')[0]);
-    url.searchParams.append("userId", "67a823cbf1c993640006cf59")
+    url.searchParams.append("userId", localStorage.getItem("userId"))
   
     const response = await fetch(url);
     return response.json();
@@ -85,4 +88,29 @@ const GetCharts = async (file_id, training_id, model_type, dataset_id, config_bo
     return response.json();
   }
 
-export default { UploadFiles, GetDatasets, GetCharts, GetDatasetById };
+  const Login = async (user, hashedPassword) => {
+  const response = await fetch(base_url + "login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ user, password: hashedPassword }),
+  });
+  return response.json();
+};
+
+const GetInfoDatasets = async (userId) => {
+  try {
+    const url = new URL(base_url + "/get-info-datasets");
+    url.searchParams.append("userId", userId);
+
+    const response = await fetch(url.toString());
+    if (!response.ok) throw new Error("Error al obtener info de datasets");
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("getInfoDatasets error:", error);
+    return null;
+  }
+};
+
+export default { UploadFiles, GetDatasets, GetCharts, GetDatasetById, Login, GetInfoDatasets};
